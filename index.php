@@ -23,7 +23,7 @@ if(isset($_POST['submit'])) //onclick book
 	$count=$_POST['tcount']; //count from user
 	$name=$_POST['name'];  //name from user
 	$email=$_POST['email']; //email from user
-	if($count>7 || $count<0)    //check the ticket count is between 1-7 only
+	if($count>7|| $count<0)    //check the ticket count is between 1-7 only
 		$error="Ticket count will be 1-7 only"; //otherwise through a error
 	elseif(array_sum($remain)<$count)
 	{
@@ -38,13 +38,29 @@ if(isset($_POST['submit'])) //onclick book
 		//seats from the remaining seats available in the row. Book the row.
 		if(count($bookingarr)==0)   
 		{
+			if(in_array($count,$remain))
+			{
+				$key=array_search($count, $remain);
+				for($x=$key*5+1;$x<=($key+1)*7;$x++)
+				{
+					if(!in_array($x, $booked))
+					{
+						array_push($bookingarr,$x);
+						array_push($rowarr,$key+1);
+					}
+					if(count($bookingarr)==$count || $x>80)   
+							break;
+				}
+			}
+			else
+			{
 			for($key=0;$key<count($remain);$key++)
 			{
 				if($remain[$key]==0) //if the row is fully booked skip the loop
 					continue;
 				if($remain[$key]>=$count) //check the ticket count is less than or equal to remaining seats in array
 				{
-					for($x=$key*7+1;$x<=($key+1)*7;$x++)
+					for($x=$key*5+1;$x<=($key+1)*7;$x++)
 					{
 						if(!in_array($x, $booked))    //book the seat numbers which are not booked or available in the already booked array in that row
 						{
@@ -60,19 +76,21 @@ if(isset($_POST['submit'])) //onclick book
 					break;
 			}
 		}
+	}
 
 		// if first case not passed.
 		// loop the remaining seats from the remain array, if the any of the next two row is available to book to create the ticket count.
 		//Book that row.
 		if(count($bookingarr)==0)
 		{
+
 			for($key=0;$key<count($remain)-1;$key++)
 			{
 				if($remain[$key]==0) //check the ticket count is less than or equal to remaining seats in array
 					continue;
 				if($remain[$key]+$remain[$key+1]>=$count) //check the current row and next row is sufficent to book the tickets
 				{
-					for($x=$key*7+1;$x<=($key+1)*7;$x++)
+					for($x=$key*5+1;$x<=($key+1)*7;$x++)
 					{
 						if(!in_array($x, $booked)) //book the seat numbers which are not booked or available in the already booked array in that row
 						{
@@ -97,7 +115,7 @@ if(isset($_POST['submit'])) //onclick book
 			{
 				if($remain[$key]==0)
 					continue;
-				for($x=$key*7+1;$x<=($key+1)*7;$x++)
+				for($x=$key*5+1;$x<=($key+1)*7;$x++)
 				{
 					if(!in_array($x, $booked))
 					{
@@ -170,14 +188,38 @@ if(isset($_POST['submit'])) //onclick book
 		<!-- COACH BLUE PRINT -->
 		<div style="border:solid 1px;" class="col-lg-6">
 			<?php 
+			$i=5;
+			$c=0;
 			for($x=1;$x<=80;$x++)  //printing the blueprint of the 80 seats
-			{ 
+			{
+
 				if(in_array($x, $booked))  // if seat is booked return checked icon
 					echo '<i class="glyphicon glyphicon-check"></i>';
 				else
 					echo '<i class="glyphicon glyphicon-unchecked"></i>';  //else return unchecked icon
 				?>
-				<?php if($x%7==0) echo "<br>"; else echo "&nbsp; &nbsp; &nbsp; &nbsp;   &nbsp; &nbsp; &nbsp; &nbsp;"; ?> 
+				<?php 
+						$c++;
+						if($c==$i && $c==5 && $x<=72)
+						{
+							echo "<br>"; 
+							$i=6;
+							$c=0;
+						}
+						elseif($c==$i && $c==6 && $x<=72)
+						{
+							echo "<br>"; 
+							$i=7;
+							$c=0;
+						}
+						elseif($c==7 && $c==$i && $x<=72)
+						{
+							echo "<br>"; 
+							$i=5;
+							$c=0;
+						}
+						else
+							echo "&nbsp; &nbsp; &nbsp; &nbsp;"; ?> 
 			<?php	}  ?>
 		</div>
 

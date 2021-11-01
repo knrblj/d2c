@@ -25,19 +25,19 @@ ENGINE = InnoDB;
 --Insering Intial all the rows and booking seats in every row
 --Assume all are vacant
 INSERT INTO `bookstatus` (`row`, `booknum`, `remaining`) VALUES 
-('1', '', '7'), 
-('2', '', '7'),
+('1', '', '5'), 
+('2', '', '6'),
 ('3', '', '7'), 
-('4', '', '7'),
-('5', '', '7'), 
+('4', '', '5'),
+('5', '', '6'), 
 ('6', '', '7'),
-('7', '', '7'), 
-('8', '', '7'),
+('7', '', '5'), 
+('8', '', '6'),
 ('9', '', '7'), 
-('10', '', '7'),
-('11', '', '7'), 
-('12', '', '3');
-
+('10', '', '5'),
+('11', '', '6'), 
+('12', '', '7'),
+('13', '', '8');
 
 --Delete all the data from the database
 --resetting the data
